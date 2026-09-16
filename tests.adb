@@ -50,8 +50,8 @@ begin
    -- TEST 3: Union Operation
    Put_Line ("TEST 3 — Union Operation");
    declare
-      S1 : CSG_Tree := Create_Sphere ((-2.0, 0.0, 0.0), 1.0);
-      S2 : CSG_Tree := Create_Sphere ((2.0, 0.0, 0.0), 1.0);
+      S1 : constant CSG_Tree := Create_Sphere ((-2.0, 0.0, 0.0), 1.0);
+      S2 : constant CSG_Tree := Create_Sphere ((2.0, 0.0, 0.0), 1.0);
       Tree : CSG_Tree := Union_Op (S1, S2);
    begin
       Check ("3.1 Left component is inside", Contains (Tree, (-2.0, 0.0, 0.0)));
@@ -63,8 +63,8 @@ begin
    -- TEST 4: Intersection Operation
    Put_Line ("TEST 4 — Intersection Operation");
    declare
-      B1 : CSG_Tree := Create_Box ((-1.0, -1.0, -1.0), (1.0, 1.0, 1.0));
-      B2 : CSG_Tree := Create_Box ((0.0, -1.0, -1.0), (2.0, 1.0, 1.0));
+      B1 : constant CSG_Tree := Create_Box ((-1.0, -1.0, -1.0), (1.0, 1.0, 1.0));
+      B2 : constant CSG_Tree := Create_Box ((0.0, -1.0, -1.0), (2.0, 1.0, 1.0));
       Tree : CSG_Tree := Intersection_Op (B1, B2);
    begin
       Check ("4.1 Overlap area is inside", Contains (Tree, (0.5, 0.0, 0.0)));
@@ -76,8 +76,8 @@ begin
    -- TEST 5: Difference Operation
    Put_Line ("TEST 5 — Difference Operation");
    declare
-      B  : CSG_Tree := Create_Box ((-1.0, -1.0, -1.0), (1.0, 1.0, 1.0));
-      S  : CSG_Tree := Create_Sphere ((0.0, 0.0, 0.0), 1.1); -- Slightly larger than radius 1
+      B  : constant CSG_Tree := Create_Box ((-1.0, -1.0, -1.0), (1.0, 1.0, 1.0));
+      S  : constant CSG_Tree := Create_Sphere ((0.0, 0.0, 0.0), 1.1); -- Slightly larger than radius 1
       Tree : CSG_Tree := Difference_Op (B, S);
    begin
       Check ("5.1 Box corner remains inside", Contains (Tree, (1.0, 1.0, 1.0)));
@@ -89,10 +89,10 @@ begin
    -- TEST 6: Complex Composite Tree (Box - (Sphere U Sphere))
    Put_Line ("TEST 6 — Complex Composite Tree");
    declare
-      B  : CSG_Tree := Create_Box ((-2.0, -2.0, -2.0), (2.0, 2.0, 2.0));
-      S1 : CSG_Tree := Create_Sphere ((-1.0, 0.0, 0.0), 1.0);
-      S2 : CSG_Tree := Create_Sphere ((1.0, 0.0, 0.0), 1.0);
-      U  : CSG_Tree := Union_Op (S1, S2);
+      B  : constant CSG_Tree := Create_Box ((-2.0, -2.0, -2.0), (2.0, 2.0, 2.0));
+      S1 : constant CSG_Tree := Create_Sphere ((-1.0, 0.0, 0.0), 1.0);
+      S2 : constant CSG_Tree := Create_Sphere ((1.0, 0.0, 0.0), 1.0);
+      U  : constant CSG_Tree := Union_Op (S1, S2);
       Tree : CSG_Tree := Difference_Op (B, U);
    begin
       Check ("6.1 Subtracted center 1 is outside", not Contains (Tree, (-1.0, 0.0, 0.0)));
@@ -140,6 +140,7 @@ begin
       Check ("8.1 Union caught null exception", Caught_Union);
       Check ("8.2 Intersection caught null exception", Caught_Intersect);
       Check ("8.3 Difference caught null exception", Caught_Diff);
+      Check ("8.4 Trees remained unallocated", T1 = null and T2 = null and T3 = null);
       T1 := null; T2 := null; T3 := null; -- Reset
    end;
 
@@ -174,8 +175,8 @@ begin
    -- TEST 11: SDF Exact Boundary Checks
    Put_Line ("TEST 11 — SDF Exact Boundary Precision");
    declare
-      S1 : CSG_Tree := Create_Sphere ((-1.0, 0.0, 0.0), 1.0);
-      S2 : CSG_Tree := Create_Sphere ((1.0, 0.0, 0.0), 1.0);
+      S1 : constant CSG_Tree := Create_Sphere ((-1.0, 0.0, 0.0), 1.0);
+      S2 : constant CSG_Tree := Create_Sphere ((1.0, 0.0, 0.0), 1.0);
       Tree : CSG_Tree := Union_Op (S1, S2);
    begin
       Check ("11.1 Origin is on boundary (SDF=0)", Is_Close (Evaluate_SDF (Tree, (0.0, 0.0, 0.0)), 0.0));
@@ -187,8 +188,8 @@ begin
    -- TEST 12: Empty Intersection (No overlap)
    Put_Line ("TEST 12 — Empty Intersection invariant");
    declare
-      B1 : CSG_Tree := Create_Box ((-5.0, -1.0, -1.0), (-3.0, 1.0, 1.0));
-      B2 : CSG_Tree := Create_Box ((3.0, -1.0, -1.0), (5.0, 1.0, 1.0));
+      B1 : constant CSG_Tree := Create_Box ((-5.0, -1.0, -1.0), (-3.0, 1.0, 1.0));
+      B2 : constant CSG_Tree := Create_Box ((3.0, -1.0, -1.0), (5.0, 1.0, 1.0));
       Tree : CSG_Tree := Intersection_Op (B1, B2);
    begin
       Check ("12.1 Origin is outside empty set", not Contains (Tree, (0.0, 0.0, 0.0)));
@@ -200,8 +201,8 @@ begin
    -- TEST 13: Total Eclipse Difference
    Put_Line ("TEST 13 — Total Eclipse Difference invariant");
    declare
-      Inner : CSG_Tree := Create_Sphere ((0.0, 0.0, 0.0), 1.0);
-      Outer : CSG_Tree := Create_Box ((-2.0, -2.0, -2.0), (2.0, 2.0, 2.0));
+      Inner : constant CSG_Tree := Create_Sphere ((0.0, 0.0, 0.0), 1.0);
+      Outer : constant CSG_Tree := Create_Box ((-2.0, -2.0, -2.0), (2.0, 2.0, 2.0));
       Tree  : CSG_Tree := Difference_Op (Inner, Outer); -- Subtracting larger from smaller
    begin
       Check ("13.1 Origin is empty", not Contains (Tree, (0.0, 0.0, 0.0)));
